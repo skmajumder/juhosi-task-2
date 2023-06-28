@@ -15,7 +15,7 @@ if (get_logged_in()) {
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="mt-4 p-5 bg-light rounded">
-                    <h1>Login page</h1>
+                    <h1>Change Password</h1>
                 </div>
             </div>
         </div>
@@ -27,8 +27,8 @@ if (get_logged_in()) {
         <div class="row">
             <div class="col-lg-8 offset-lg-2 py-2 text-center">
                 <?php
-                validate_user_login();
                 display_message();
+                validate_password_change();
                 ?>
             </div>
         </div>
@@ -42,25 +42,27 @@ if (get_logged_in()) {
                 <div class="loginForm p-5">
                     <form method="post">
                         <div class="mb-3">
-                            <label for="user_id" class="form-label">User ID</label>
-                            <input type="text" class="form-control" id="user_id" name="user_id" required>
+                            <label for="phone_number" class="form-label">Enter Mobile Number</label>
+                            <input type="number" class="form-control" id="phone_number" name="phone_number" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input type="password" class="form-control" minlength="6" id="password" name="password"
                                    required>
                         </div>
-                        <div class="d-grid gap-3">
-                            <button class="btn btn-primary" type="submit">Login</button>
-                            <a href="change-password.php" class="btn btn-primary">Change Password</a>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Confirm Password:</label>
+                            <input type="password" class="form-control" minlength="6" id="confirm-password"
+                                   name="confirm_password"
+                                   required>
                         </div>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 
 <!-- Footer -->
 <?php include('./includes/footer.php'); ?>

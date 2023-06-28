@@ -49,23 +49,15 @@ function send_email($email, $subject, $message, $headers)
     return mail($email, $subject, $message, $headers);
 }
 
-function email_exists($email)
+function phone_exist($phone)
 {
-    $sql = "SELECT id FROM user WHERE email = '$email'";
+    $sql = "SELECT id FROM user WHERE phone_number = '$phone'";
     $result = query($sql);
     confirm($result);
     if (row_count($result) == 1) return true;
     else return false;
 }
 
-function username_exists($user_name)
-{
-    $sql = "SELECT id FROM user WHERE username = '$user_name'";
-    $result = query($sql);
-    confirm($result);
-    if (row_count($result) == 1) return true;
-    else return false;
-}
 
 function get_logged_in()
 {
@@ -95,6 +87,10 @@ function validate_user_registration()
         $password = clean($_POST['password']);
         $confirm_password = clean($_POST['confirm-password']);
         $create_time = clean($date);
+
+        if (phone_exist($phone_number)) {
+            $errors[] = "<span class='server_error_message'>$phone_number alrady exist, use another one.</span>";
+        }
 
         if (empty($user_name)) {
             $errors[] = "<span class='server_error_message'>Name can't be empty</span>";
@@ -385,4 +381,71 @@ function insert_customer_order($userID, $order_date, $company, $owner, $item, $q
         return false;
     }
 
+}
+
+
+function validate_password_change()
+{
+    $errors = [];
+
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $phone_number = clean($_POST['phone_number']);
+        $password = clean($_POST['password']);
+        $confirm_password = clean($_POST['confirm_password']);
+
+        if (empty($phone_number)) {
+            $errors[] = "<span class='server_error_message'>User ID Can&acute;t be Empty.</span>";
+        }
+
+        if (!phone_exist($phone_number)) {
+            $errors[] = "<span class='server_error_message'>$phone_number not exist, enter correct one</span>";
+        }
+
+        if (empty($password)) {
+            $errors[] = "<span class='server_error_message'>Password Can't Empty</span>";
+        }
+
+        if (empty($confirm_password)) {
+            $errors[] = "<span class='server_error_message'>input confirm password</span>";
+        }
+
+        if ($confirm_password !== $password) {
+            $errors[] = "<span class='server_error_message'>Passwords do not match.</span>";
+        }
+
+        if (!empty($errors)) {
+            foreach ($errors as $error) echo validation_errors($error);
+        } else {
+            if (change_password($phone_number, $password)) {
+                set_message('<div class="alert alert-success" role="alert">Password update Successfully, Now Login</div>');
+                redirect("login.php");
+            } else {
+                set_message('<div class="alert alert-danger" role="alert">Password Update Fail! Try Again</div>');
+            }
+        }
+    }
+}
+
+function change_password($phone_number, $password)
+{
+    $esc_phone_number = escape_sql($phone_number);
+    $esc_password = escape_sql($password);
+
+    if (!$esc_phone_number) {
+        return false;
+    }
+
+    $sql = "SELECT id FROM user WHERE phone_number = '$esc_phone_number'";
+    $result = query($sql);
+    confirm($result);
+
+    if (row_count($result) == 1) {
+        $encryptedPassword = md5($esc_password);
+        $sql = "UPDATE user SET password = '$encryptedPassword' WHERE phone_number = '$esc_phone_number'";
+        $result = query($sql);
+        confirm($result);
+        return true;
+    } else {
+        return false;
+    }
 }

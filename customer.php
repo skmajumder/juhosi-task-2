@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <div class="mt-4 p-5 bg-light rounded">
-                        <h1>Customer Profile</h1>
+                        <h1>Order Form</h1>
                         <p><?php echo $_SESSION['username']; ?></p>
                         <?php
                         validate_customer_order();
