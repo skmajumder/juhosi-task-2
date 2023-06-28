@@ -21,14 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 mt-5 text-center">
-                    <?php
-                    if ($_SESSION['userRole'] === 'customer') {
-                        echo '<a href="customer.php" class="btn btn-primary btn-lg">Go to Profile</a>';
-                    }
-                    if ($_SESSION['userRole'] === 'admin') {
-                        echo '<a href="admin.php" class="btn btn-primary btn-lg">Go to Profile</a>';
-                    }
-                    ?>
+                    <a href="customer.php" class="btn btn-primary btn-lg">Go to Profile</a>
                 </div>
             </div>
         </div>

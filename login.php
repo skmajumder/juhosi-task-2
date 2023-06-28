@@ -40,10 +40,10 @@ if (get_logged_in()) {
         <div class="row">
             <div class="col-lg-8 offset-lg-2 py-5">
                 <div class="loginForm p-5">
-                    <form method="post" onsubmit="return validateForm()">
+                    <form method="post">
                         <div class="mb-3">
-                            <label for="username" class="form-label">ID (Username):</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+                            <label for="user_id" class="form-label">User ID</label>
+                            <input type="text" class="form-control" id="user_id" name="user_id" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password:</label>

@@ -41,13 +41,30 @@ if (get_logged_in()) {
                 <div class="registrationForm p-5">
                     <form id="registrationForm" method="post" onsubmit="return validateForm()">
                         <div class="mb-3">
-                            <label for="username" class="form-label">ID (Username):</label>
+                            <label for="username" class="form-label">Name:</label>
                             <input type="text" class="form-control" id="username" name="username" required>
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email:</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                            <label for="address_id" class="form-label">Address id:</label>
+                            <input type="number" class="form-control" id="address_id" name="address_id" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="isBusiness" class="form-label">Is Business</label>
+                            <select class="form-select" aria-label="Default select example" name="isBusiness" required>
+                                <option value="0">No</option>
+                                <option selected value="1">Yes</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="number" class="form-control" id="phone_number" name="phone_number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="business_reg_number" class="form-label">Business Reg Number:</label>
+                            <input type="text" class="form-control" id="business_reg_number" name="business_reg_number"
+                                   required>
+                        </div>
+
                         <div class="mb-3">
                             <label for="password" class="form-label">Password:</label>
                             <input type="password" class="form-control" minlength="6" id="password" name="password"

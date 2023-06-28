@@ -51,7 +51,7 @@ function send_email($email, $subject, $message, $headers)
 
 function email_exists($email)
 {
-    $sql = "SELECT id FROM auth WHERE email = '$email'";
+    $sql = "SELECT id FROM user WHERE email = '$email'";
     $result = query($sql);
     confirm($result);
     if (row_count($result) == 1) return true;
@@ -60,7 +60,7 @@ function email_exists($email)
 
 function username_exists($user_name)
 {
-    $sql = "SELECT id FROM auth WHERE username = '$user_name'";
+    $sql = "SELECT id FROM user WHERE username = '$user_name'";
     $result = query($sql);
     confirm($result);
     if (row_count($result) == 1) return true;
@@ -84,27 +84,36 @@ function get_logged_in()
 function validate_user_registration()
 {
     $errors = [];
+    $date = date('Y-m-d H:i:s');
 
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $user_name = clean($_POST['username']);
-        $email = clean($_POST['email']);
+        $address_id = clean($_POST['address_id']);
+        $isBusiness = clean($_POST['isBusiness']);
+        $phone_number = clean($_POST['phone_number']);
+        $business_reg_number = clean($_POST['business_reg_number']);
         $password = clean($_POST['password']);
         $confirm_password = clean($_POST['confirm-password']);
-
-        if (username_exists($user_name)) {
-            $errors[] = "<span class='server_error_message'> ID(UserName) taken, Try another</span>";
-        }
-
-        if (email_exists($email)) {
-            $errors[] = "<span class='server_error_message'>This email {$email} already exits, Try another.</span>";
-        }
+        $create_time = clean($date);
 
         if (empty($user_name)) {
-            $errors[] = "<span class='server_error_message'>ID (Username) can't be empty</span>";
+            $errors[] = "<span class='server_error_message'>Name can't be empty</span>";
         }
 
-        if (empty($email)) {
-            $errors[] = "<span class='server_error_message'>email can't be empty</span>";
+        if (empty($address_id)) {
+            $errors[] = "<span class='server_error_message'>Address id can't be empty</span>";
+        }
+
+        if (empty($isBusiness)) {
+            $errors[] = "<span class='server_error_message'>Business Field can't be empty</span>";
+        }
+
+        if (empty($phone_number)) {
+            $errors[] = "<span class='server_error_message'>Phone Number can't be empty</span>";
+        }
+
+        if (empty($business_reg_number)) {
+            $errors[] = "<span class='server_error_message'>Business Reg. Number can't be empty</span>";
         }
 
         if (empty($password)) {
@@ -124,46 +133,35 @@ function validate_user_registration()
                 echo validation_errors($error);
             }
         } else {
-            if (register_user($user_name, $email, $password)) {
-                set_message('<div class="alert alert-success" role="alert">Registration Successful. Please Check Your Email for Activation Link</div>');
-                redirect("confirm-user.php");
+            if (register_user($user_name, $address_id, $isBusiness, $phone_number, $business_reg_number, $password, $create_time)) {
+                set_message('<div class="alert alert-success" role="alert">Registration Successful. Now Login</div>');
+                redirect("login.php");
             } else {
-                set_message('<div class="alert alert-danger" role="alert">Sorry! User Registration is Failed</div>');
+                set_message('<div class="alert alert-danger" role="alert">Sorry! User Registration is Failed, Try again.</div>');
                 redirect("failed-user.php");
             }
         }
     }
 }
 
-function register_user($user_name, $email, $password)
+function register_user($user_name, $address_id, $isBusiness, $phone_number, $business_reg_number, $password, $create_time)
 {
     $esc_username = escape_sql($user_name);
-    $esc_email = escape_sql($email);
+    $esc_address_id = escape_sql($address_id);
+    $esc_isBusiness = escape_sql($isBusiness);
+    $esc_phone_number = escape_sql($phone_number);
+    $esc_business_reg_number = escape_sql($business_reg_number);
+    $esc_create_time = escape_sql($create_time);
     $esc_password = escape_sql($password);
 
-    if (email_exists($esc_email) || username_exists($esc_username)) {
-        return false;
-    }
-
     $encryptedPassword = md5($esc_password);
-    $validation_code = md5($email . microtime());
 
     /** validation complete, now inserting user data into DB */
-    $sql = "INSERT INTO auth(username, password, email, role, validation_code, active)";
-    $sql .= " VALUES('$esc_username', '$encryptedPassword', '$esc_email', 'customer', '$validation_code', 0)";
+    $sql = "INSERT INTO user(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
+    $sql .= " VALUES('$esc_username', '$esc_address_id', '$esc_isBusiness', '$esc_phone_number', '$encryptedPassword', '$esc_create_time', '$esc_business_reg_number')";
 
     $result = query($sql);
     confirm($result);
-//    TODO: Complete email activation
-//    $subject = "Activate your Account.";
-//    $message = "
-//            Hi,
-//            - Your Registration has been complete, Now active your account.
-//            - Go to http://localhost/juhosi-task/activate.php?email=$esc_email&code=$validation_code
-//        ";
-//    $headers = "From: noreply@yourwebsite.com";
-//    send_email($esc_email, $subject, $message, $headers);
-
     return true;
 }
 
@@ -199,13 +197,14 @@ function activate_user()
 function validate_user_login()
 {
     $errors = [];
+
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        $username = clean($_POST['username']);
+        $userID = clean($_POST['user_id']);
         $password = clean($_POST['password']);
         $remember = isset($_POST['remember']);
 
-        if (empty($username)) {
-            $errors[] = "<span class='server_error_message'>Username Can&acute;t be Empty.</span>";
+        if (empty($userID)) {
+            $errors[] = "<span class='server_error_message'>User ID Can&acute;t be Empty.</span>";
         }
         if (empty($password)) {
             $errors[] = "<span class='server_error_message'>Password Can&acute;t be Empty.</span>";
@@ -214,8 +213,9 @@ function validate_user_login()
         if (!empty($errors)) {
             foreach ($errors as $error) echo validation_errors($error);
         } else {
-            if (login_user($username, $password, $remember)) {
-                login_user_profile_redirect();
+            if (login_user($userID, $password, $remember)) {
+                set_message("<h3>User Found</h3>");
+                redirect('customer.php');
             } else {
                 set_message("<h3>Error! User login failed</h3>");
             }
@@ -223,32 +223,34 @@ function validate_user_login()
     }
 }
 
-function login_user($username, $password, $remember)
+function login_user($userID, $password, $remember)
 {
-    $esc_username = escape_sql($username);
+    $esc_userID = escape_sql($userID);
     $esc_password = escape_sql($password);
     $esc_remember = escape_sql($remember);
 
-    if (!username_exists($esc_username)) {
-        return false;
-    }
+    echo $esc_userID;
+    echo $esc_password;
 
-    $sql = "SELECT id, password FROM auth WHERE username = '$esc_username' AND active = 1 AND validation_code = 0";
+    $sql = "SELECT name, password FROM user WHERE id = '$esc_userID'";
     $result = query($sql);
     confirm($result);
+
     if (row_count($result) == 1) {
         $row = fetch_array($result);
+
         $db_password = $row['password'];
         $useID = $row['id'];
+        $useName = $row['name'];
 
         if (md5($esc_password) === $db_password) {
-            $_SESSION['username'] = $esc_username;
+            $_SESSION['username'] = $useName;
             $_SESSION['userID'] = $useID;
 
             if ($esc_remember == "on") {
                 // Set cookie for 7 days
-                setcookie('username', $esc_username, time() + (7 * 24 * 60 * 60), '/', '', false, true);
-                $_COOKIE['username'] = $esc_username;
+                setcookie('username', $useName, time() + (7 * 24 * 60 * 60), '/', '', false, true);
+                $_COOKIE['username'] = $useName;
             }
             return true;
         } else {

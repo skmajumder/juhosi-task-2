@@ -4,7 +4,7 @@
 <!-- Nav menu -->
 <?php include('./includes/nav.php'); ?>
 
-<?php if (get_logged_in() && $_SESSION['userRole'] === 'customer'): ?>
+<?php if (get_logged_in()): ?>
     <section class="section">
         <div class="container">
             <div class="row">
