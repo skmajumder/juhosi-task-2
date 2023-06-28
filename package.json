@@ -1,0 +1,20 @@
+{
+  "name": "juhosi-software-web-development-assignment",
+  "version": "1.0.0",
+  "description": "Juhosi Software Web Development Assignment Task 2",
+  "main": "index.js",
+  "scripts": {
+    "start": "browser-sync start --proxy http://localhost/juhosi-task-2 --files *.php --browser chrome",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skmajumder/juhosi-task-2.git"
+  },
+  "author": "Shuvo Kumar Majumder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skmajumder/juhosi-task-2/issues"
+  },
+  "homepage": "https://github.com/skmajumder/juhosi-task-2#readme"
+}
