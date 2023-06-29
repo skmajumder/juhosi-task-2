@@ -1,6 +1,9 @@
 <!-- Scripts -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/datatables.min.js"></script>
+<script src="assets/js/dataTables.autoFill.min.js"></script>
+<script src="assets/js/responsive.dataTables.min.js"></script>
 <script src="assets/js/script.js"></script>
 <script>
     function validateForm() {

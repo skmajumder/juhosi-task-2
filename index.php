@@ -21,7 +21,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 mt-5 text-center">
-                    <a href="customer.php" class="btn btn-primary btn-lg">Go to Profile</a>
+                    <a href="customer.php" class="btn btn-primary btn-lg">Order</a>
                 </div>
             </div>
         </div>

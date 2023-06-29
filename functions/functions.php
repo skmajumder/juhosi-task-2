@@ -153,7 +153,7 @@ function register_user($user_name, $address_id, $isBusiness, $phone_number, $bus
     $encryptedPassword = md5($esc_password);
 
     /** validation complete, now inserting user data into DB */
-    $sql = "INSERT INTO user(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
+    $sql = "INSERT INTO User(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
     $sql .= " VALUES('$esc_username', '$esc_address_id', '$esc_isBusiness', '$esc_phone_number', '$encryptedPassword', '$esc_create_time', '$esc_business_reg_number')";
 
     $result = query($sql);
@@ -225,10 +225,7 @@ function login_user($userID, $password, $remember)
     $esc_password = escape_sql($password);
     $esc_remember = escape_sql($remember);
 
-    echo $esc_userID;
-    echo $esc_password;
-
-    $sql = "SELECT name, password FROM user WHERE id = '$esc_userID'";
+    $sql = "SELECT name, password FROM User WHERE id = '$esc_userID'";
     $result = query($sql);
     confirm($result);
 
@@ -236,12 +233,11 @@ function login_user($userID, $password, $remember)
         $row = fetch_array($result);
 
         $db_password = $row['password'];
-        $useID = $row['id'];
         $useName = $row['name'];
 
         if (md5($esc_password) === $db_password) {
             $_SESSION['username'] = $useName;
-            $_SESSION['userID'] = $useID;
+            $_SESSION['userID'] = $esc_userID;
 
             if ($esc_remember == "on") {
                 // Set cookie for 7 days
@@ -285,28 +281,15 @@ function validate_customer_order()
     $errors = [];
 
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        $order_date = clean($_POST['order-date']);
-        $company = clean($_POST['company']);
-        $owner = clean($_POST['owner']);
+        $order_date = clean($_POST['order_date']);
         $item = clean($_POST['item']);
         $quantity = clean($_POST['quantity']);
         $weight = clean($_POST['weight']);
-        $request_shipment = clean($_POST['request-shipment']);
-        $tracking_id = clean($_POST['tracking-id']);
-        $shipment_size = clean($_POST['shipment-size']);
-        $box_count = clean($_POST['box-count']);
-        $specification = clean($_POST['specification']);
-        $checklist_quantity = clean($_POST['checklist-quantity']);
-        $userID = clean($_POST['userID']);
+        $request_shipment = clean($_POST['request_shipment']);
+        $user_id = clean($_POST['company']);
 
         if (empty($order_date)) {
             $errors[] = "<span class='server_error_message'>Order date can't be empty</span>";
-        }
-        if (empty($company)) {
-            $errors[] = "<span class='server_error_message'>Company Name can't be empty</span>";
-        }
-        if (empty($owner)) {
-            $errors[] = "<span class='server_error_message'>Owner Name can't be empty</span>";
         }
         if (empty($item)) {
             $errors[] = "<span class='server_error_message'>Item Name can't be empty</span>";
@@ -317,26 +300,8 @@ function validate_customer_order()
         if (empty($weight)) {
             $errors[] = "<span class='server_error_message'>weight can't be empty</span>";
         }
-        if (empty($request_shipment)) {
-            $errors[] = "<span class='server_error_message'>Shipment request can't be empty</span>";
-        }
-        if (empty($tracking_id)) {
-            $errors[] = "<span class='server_error_message'>Tracking id can't be empty</span>";
-        }
-        if (empty($shipment_size)) {
-            $errors[] = "<span class='server_error_message'>Shipment size can't be empty</span>";
-        }
-        if (empty($box_count)) {
-            $errors[] = "<span class='server_error_message'>Box count can't be empty</span>";
-        }
-        if (empty($specification)) {
-            $errors[] = "<span class='server_error_message'>Specification can't be empty</span>";
-        }
-        if (empty($checklist_quantity)) {
-            $errors[] = "<span class='server_error_message'>Checklist quantity can't be empty</span>";
-        }
-        if (empty($userID)) {
-            $errors[] = "<span class='server_error_message'>User ID can't be empty</span>";
+        if (empty($user_id)) {
+            $errors[] = "<span class='server_error_message'>Company can't be empty</span>";
         }
 
         if (!empty($errors)) {
@@ -344,7 +309,7 @@ function validate_customer_order()
                 echo validation_errors($error);
             }
         } else {
-            if (insert_customer_order($userID, $order_date, $company, $owner, $item, $quantity, $weight, $request_shipment, $tracking_id, $shipment_size, $box_count, $specification, $checklist_quantity)) {
+            if (insert_customer_order($order_date, $user_id, $item, $quantity, $weight, $request_shipment)) {
                 set_message('<div class="alert alert-success alert-dismissible fade show" role="alert"> Data was successfully inserted <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> </div>');
             } else {
                 set_message('<div class="alert alert-warning alert-dismissible fade show" role="alert"> <strong>Error!</strong> No data was inserted or an error occurred <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> </div>');
@@ -353,26 +318,18 @@ function validate_customer_order()
     }
 }
 
-function insert_customer_order($userID, $order_date, $company, $owner, $item, $quantity, $weight, $request_shipment, $tracking_id, $shipment_size, $box_count, $specification, $checklist_quantity)
+function insert_customer_order($order_date, $user_id, $item, $quantity, $weight, $request_shipment)
 {
-
-    $esc_userID = escape_sql($userID);
     $esc_order_date = escape_sql($order_date);
-    $esc_company = escape_sql($company);
-    $esc_owner = escape_sql($owner);
     $esc_item = escape_sql($item);
     $esc_quantity = escape_sql($quantity);
     $esc_weight = escape_sql($weight);
     $esc_request_shipment = escape_sql($request_shipment);
-    $esc_tracking_id = escape_sql($tracking_id);
-    $esc_shipment_size = escape_sql($shipment_size);
-    $esc_box_count = escape_sql($box_count);
-    $esc_specification = escape_sql($specification);
-    $esc_checklist_quantity = escape_sql($checklist_quantity);
+    $esc_user_id = escape_sql($user_id);
 
     /** validation complete, now inserting order data into DB */
-    $sql = "INSERT INTO customer (userID, order_date, company, owner, item, quantity, weight, request_shipment, tracking_id, shipment_size, box_count, specification, checklist_quantity)";
-    $sql .= " VALUES ('$esc_userID', '$esc_order_date', '$esc_company', '$esc_owner', '$esc_item', '$esc_quantity', '$esc_weight', '$esc_request_shipment', '$esc_tracking_id', '$esc_shipment_size', '$esc_box_count', '$esc_specification', '$esc_checklist_quantity')";
+    $sql = "INSERT INTO Orderitem (user_id, order_date, item, count, weight, requests)";
+    $sql .= " VALUES ( '$esc_user_id', '$esc_order_date', '$esc_item', '$esc_quantity', '$esc_weight', '$esc_request_shipment')";
     $result = query($sql);
     confirm($result);
     if ($result && row_effect()) {
@@ -449,3 +406,83 @@ function change_password($phone_number, $password)
         return false;
     }
 }
+
+
+function order_list_excel_data()
+{
+    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+
+        $userID = escape_sql($_SESSION['userID']);
+        $sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
+        $result = query($sql);
+        confirm($result);
+        if (row_count($result)) {
+            // Set the content type and headers for Excel file download
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename="data.xls"');
+
+            // Create the Excel file
+            $output = fopen('php://output', 'w');
+
+            // Write column headers
+            fputcsv($output, array('Order Date', 'Company', 'Order Owner', 'Product', 'EA/Count', 'Weight', 'Request for Shipment', 'Field box: EA', 'Field box: Size', 'Office box check', 'Specification quantity'));
+
+            while ($row = fetch_array($result)) {
+                $rowData = array($row['order_date'], $row['user_id'], $row['name'], $row['item'], $row['count'], $row['weight'], $row['requests'], $row['count'], 'Null', 'Null', 'Null');
+                fputcsv($output, $rowData);
+            }
+            // Close the file
+            fclose($output);
+        }
+    }
+}
+
+//function order_list_excel_data()
+//{
+//    if ($_SERVER['REQUEST_METHOD'] === "POST") {
+//
+//        $userID = escape_sql($_SESSION['userID']);
+//        $sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
+//        $result = query($sql);
+//        confirm($result);
+//        if (row_count($result)) {
+//            $html = "
+//                <table>
+//                <tr>
+//                    <th>Order Date</th>
+//                    <th>Company</th>
+//                    <th>Order Owner</th>
+//                    <th>Product</th>
+//                    <th>EA/Count</th>
+//                    <th>Weight</th>
+//                    <th>Request for Shipment</th>
+//                    <th>Field box: EA</th>
+//                    <th>Field box: Size</th>
+//                    <th>Office box check</th>
+//                    <th>Specification quantity</th>
+//                </tr>
+//        ";
+//            while ($row = fetch_array($result)) {
+//                $html .= '
+//                <tr>
+//                    <td>' . $row['order_date'] . '</td>
+//                    <td>' . $row['user_id'] . '</td>
+//                    <td>' . $row['name'] . '</td>
+//                    <td>' . $row['item'] . '</td>
+//                    <td>' . $row['count'] . '</td>
+//                    <td>' . $row['weight'] . '</td>
+//                    <td>' . $row['requests'] . '</td>
+//                    <td>' . $row['count'] . '</td>
+//                    <td>Null</td>
+//                    <td>Null</td>
+//                    <td>Null</td>
+//                </tr>
+//                ';
+//            }
+//            $html .= '</table>';
+//            header('Content-Type:application/xls');
+//            header('Content-Disposition:attachment;filename=report.xls');
+//            echo $html;
+//        }
+//    }
+//}

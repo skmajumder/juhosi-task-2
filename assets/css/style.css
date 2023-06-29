@@ -16,3 +16,7 @@ label {
 .form-label {
     font-weight: 600;
 }
+
+.order-list-table th, .order-list-table td {
+    font-size: 14px;
+}

@@ -1,12 +1,13 @@
 <?php
 
 // Database configuration
+
 $servername = "localhost";
 $username = "root";
 $password = "";
 $database = "sql12629011";
 
-//$servername = "sql12.freemysqlhosting.net";
+//$servername = "sql12.freemysqlhosting.net:3306";
 //$username = "sql12629011";
 //$password = "RzlzHmeUy8";
 //$database = "sql12629011";

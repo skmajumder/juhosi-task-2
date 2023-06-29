@@ -16,6 +16,9 @@
     <title>Assignment Task</title>
     <!-- Style -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/datatables.min.css">
+    <link rel="stylesheet" href="assets/css/autoFill.dataTables.min.css">
+    <link rel="stylesheet" href="assets/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>

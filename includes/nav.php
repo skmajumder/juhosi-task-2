@@ -21,6 +21,12 @@
                 endif;
                 if (get_logged_in()): ?>
                     <li class="nav-item">
+                        <a class="nav-link" href="customer.php">Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="order-list.php">Order List</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="logout.php">Logout</a>
                     </li>
                 <?php endif; ?>
