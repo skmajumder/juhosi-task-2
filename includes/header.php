@@ -14,6 +14,8 @@
           rel="stylesheet">
     <!-- Title -->
     <title>Assignment Task</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <!-- Style -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/datatables.min.css">

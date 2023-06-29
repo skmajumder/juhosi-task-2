@@ -1,4 +1,4 @@
-<?php include('./functions/init.php');
+<?php include('functions/init.php');
 
 if (!get_logged_in()) {
     redirect('login.php');

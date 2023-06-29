@@ -1,8 +1,8 @@
 <!-- Header -->
-<?php include('./includes/header.php'); ?>
+<?php include('includes/header.php'); ?>
 
 <!-- Nav menu -->
-<?php include('./includes/nav.php'); ?>
+<?php include('includes/nav.php'); ?>
 
 <?php if (get_logged_in()): ?>
     <section class="section">
@@ -87,6 +87,6 @@ else:
 endif; ?>
 
 <!-- Footer -->
-<?php include('./includes/footer.php'); ?>
+<?php include('includes/footer.php'); ?>
 
 

@@ -1,8 +1,8 @@
 <!-- Header -->
-<?php include('./includes/header.php'); ?>
+<?php include('includes/header.php'); ?>
 
 <!-- Nav menu -->
-<?php include('./includes/nav.php'); ?>
+<?php include('includes/nav.php'); ?>
 
 <section class="section">
     <div class="container">
