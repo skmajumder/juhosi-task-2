@@ -10,7 +10,7 @@ if (!get_logged_in()) {
 }
 
 $userID = escape_sql($_SESSION['userID']);
-$sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
+$sql = "SELECT * FROM orderitem INNER JOIN user ON orderitem.user_id = user.id WHERE user.id = '$userID'";
 $result = query($sql);
 confirm($result);
 ?>

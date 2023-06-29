@@ -153,7 +153,7 @@ function register_user($user_name, $address_id, $isBusiness, $phone_number, $bus
     $encryptedPassword = md5($esc_password);
 
     /** validation complete, now inserting user data into DB */
-    $sql = "INSERT INTO User(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
+    $sql = "INSERT INTO user(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
     $sql .= " VALUES('$esc_username', '$esc_address_id', '$esc_isBusiness', '$esc_phone_number', '$encryptedPassword', '$esc_create_time', '$esc_business_reg_number')";
 
     $result = query($sql);
@@ -225,7 +225,7 @@ function login_user($userID, $password, $remember)
     $esc_password = escape_sql($password);
     $esc_remember = escape_sql($remember);
 
-    $sql = "SELECT name, password FROM User WHERE id = '$esc_userID'";
+    $sql = "SELECT name, password FROM user WHERE id = '$esc_userID'";
     $result = query($sql);
     confirm($result);
 
@@ -328,7 +328,7 @@ function insert_customer_order($order_date, $user_id, $item, $quantity, $weight,
     $esc_user_id = escape_sql($user_id);
 
     /** validation complete, now inserting order data into DB */
-    $sql = "INSERT INTO Orderitem (user_id, order_date, item, count, weight, requests)";
+    $sql = "INSERT INTO orderitem (user_id, order_date, item, count, weight, requests)";
     $sql .= " VALUES ( '$esc_user_id', '$esc_order_date', '$esc_item', '$esc_quantity', '$esc_weight', '$esc_request_shipment')";
     $result = query($sql);
     confirm($result);
@@ -413,7 +413,7 @@ function order_list_excel_data()
     if ($_SERVER['REQUEST_METHOD'] === "POST") {
 
         $userID = escape_sql($_SESSION['userID']);
-        $sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
+        $sql = "SELECT * FROM orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
         $result = query($sql);
         confirm($result);
         if (row_count($result)) {
@@ -436,53 +436,3 @@ function order_list_excel_data()
         }
     }
 }
-
-//function order_list_excel_data()
-//{
-//    if ($_SERVER['REQUEST_METHOD'] === "POST") {
-//
-//        $userID = escape_sql($_SESSION['userID']);
-//        $sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
-//        $result = query($sql);
-//        confirm($result);
-//        if (row_count($result)) {
-//            $html = "
-//                <table>
-//                <tr>
-//                    <th>Order Date</th>
-//                    <th>Company</th>
-//                    <th>Order Owner</th>
-//                    <th>Product</th>
-//                    <th>EA/Count</th>
-//                    <th>Weight</th>
-//                    <th>Request for Shipment</th>
-//                    <th>Field box: EA</th>
-//                    <th>Field box: Size</th>
-//                    <th>Office box check</th>
-//                    <th>Specification quantity</th>
-//                </tr>
-//        ";
-//            while ($row = fetch_array($result)) {
-//                $html .= '
-//                <tr>
-//                    <td>' . $row['order_date'] . '</td>
-//                    <td>' . $row['user_id'] . '</td>
-//                    <td>' . $row['name'] . '</td>
-//                    <td>' . $row['item'] . '</td>
-//                    <td>' . $row['count'] . '</td>
-//                    <td>' . $row['weight'] . '</td>
-//                    <td>' . $row['requests'] . '</td>
-//                    <td>' . $row['count'] . '</td>
-//                    <td>Null</td>
-//                    <td>Null</td>
-//                    <td>Null</td>
-//                </tr>
-//                ';
-//            }
-//            $html .= '</table>';
-//            header('Content-Type:application/xls');
-//            header('Content-Disposition:attachment;filename=report.xls');
-//            echo $html;
-//        }
-//    }
-//}
