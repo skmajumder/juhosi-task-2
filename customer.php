@@ -79,8 +79,6 @@
             </div>
         </div>
     </section>
-
-
 <?php
 else:
     redirect('index.php');

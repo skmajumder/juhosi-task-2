@@ -51,7 +51,7 @@ function send_email($email, $subject, $message, $headers)
 
 function phone_exist($phone)
 {
-    $sql = "SELECT id FROM user WHERE phone_number = '$phone'";
+    $sql = "SELECT id FROM User WHERE phone_number = '$phone'";
     $result = query($sql);
     confirm($result);
     if (row_count($result) == 1) return true;
@@ -153,7 +153,7 @@ function register_user($user_name, $address_id, $isBusiness, $phone_number, $bus
     $encryptedPassword = md5($esc_password);
 
     /** validation complete, now inserting user data into DB */
-    $sql = "INSERT INTO user(name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
+    $sql = "INSERT INTO User (name, address_id, isBusiness, phone_number, password, create_time, business_reg_number)";
     $sql .= " VALUES('$esc_username', '$esc_address_id', '$esc_isBusiness', '$esc_phone_number', '$encryptedPassword', '$esc_create_time', '$esc_business_reg_number')";
 
     $result = query($sql);
@@ -225,7 +225,7 @@ function login_user($userID, $password, $remember)
     $esc_password = escape_sql($password);
     $esc_remember = escape_sql($remember);
 
-    $sql = "SELECT name, password FROM user WHERE id = '$esc_userID'";
+    $sql = "SELECT name, password FROM User WHERE id = '$esc_userID'";
     $result = query($sql);
     confirm($result);
 
@@ -328,8 +328,8 @@ function insert_customer_order($order_date, $user_id, $item, $quantity, $weight,
     $esc_user_id = escape_sql($user_id);
 
     /** validation complete, now inserting order data into DB */
-    $sql = "INSERT INTO orderitem (user_id, order_date, item, count, weight, requests)";
-    $sql .= " VALUES ( '$esc_user_id', '$esc_order_date', '$esc_item', '$esc_quantity', '$esc_weight', '$esc_request_shipment')";
+    $sql = "INSERT INTO Orderitem (order_date, item, count, weight, requests, user_id)";
+    $sql .= " VALUES ( '$esc_order_date', '$esc_item', '$esc_quantity', '$esc_weight', '$esc_request_shipment', '$esc_user_id')";
     $result = query($sql);
     confirm($result);
     if ($result && row_effect()) {
@@ -392,13 +392,13 @@ function change_password($phone_number, $password)
         return false;
     }
 
-    $sql = "SELECT id FROM user WHERE phone_number = '$esc_phone_number'";
+    $sql = "SELECT id FROM User WHERE phone_number = '$esc_phone_number'";
     $result = query($sql);
     confirm($result);
 
     if (row_count($result) == 1) {
         $encryptedPassword = md5($esc_password);
-        $sql = "UPDATE user SET password = '$encryptedPassword' WHERE phone_number = '$esc_phone_number'";
+        $sql = "UPDATE User SET password = '$encryptedPassword' WHERE phone_number = '$esc_phone_number'";
         $result = query($sql);
         confirm($result);
         return true;

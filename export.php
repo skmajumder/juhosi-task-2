@@ -5,7 +5,7 @@ if (!get_logged_in()) {
 }
 
 $userID = escape_sql($_SESSION['userID']);
-$sql = "SELECT * FROM orderitem INNER JOIN user ON orderitem.user_id = user.id WHERE user.id = '$userID'";
+$sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
 $result = query($sql);
 confirm($result);
 
@@ -19,14 +19,14 @@ if (row_count($result)) {
 
     $fileName = "data-" . date('Y-m-d');
 
-    $fields = array('Order Date', 'Company', 'Order Owner', 'Product', 'EA/Count', 'Weight', 'Request for Shipment', 'Field box: EA', 'Field box: Size', 'Office box check', 'Specification quantity');
+    $fields = array('Order Date', 'Company', 'Order Owner', 'Product', 'EA/Count', 'Weight', 'Request for Shipment', 'Field box: EA');
 
     // Display column names as first row
     $excelData = implode("\t", array_values($fields)) . "\n";
 
     // Output each row of the data
     while ($row = fetch_array($result)) {
-        $lineData = array($row['order_date'], $row['user_id'], $row['name'], $row['item'], $row['count'], $row['weight'], $row['requests'], $row['count'], 'Null', 'Null', 'Null');
+        $lineData = array($row['order_date'], $row['user_id'], $row['name'], $row['item'], $row['count'], $row['weight'], $row['requests'], $row['count']);
         array_walk($lineData, 'filterData');
         $excelData .= implode("\t", array_values($lineData)) . "\n";
     }

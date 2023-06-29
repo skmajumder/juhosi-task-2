@@ -2,15 +2,15 @@
 
 // Database configuration
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "sql12629011";
-
-//$servername = "sql12.freemysqlhosting.net:3306";
-//$username = "sql12629011";
-//$password = "RzlzHmeUy8";
+//$servername = "localhost";
+//$username = "root";
+//$password = "";
 //$database = "sql12629011";
+
+$servername = "db4free.net";
+$username = "juhosi";
+$password = "juhosi123";
+$database = "juhosi";
 
 // Create a new MySQLi connection
 $con = mysqli_connect($servername, $username, $password, $database)

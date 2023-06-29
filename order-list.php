@@ -10,7 +10,7 @@ if (!get_logged_in()) {
 }
 
 $userID = escape_sql($_SESSION['userID']);
-$sql = "SELECT * FROM orderitem INNER JOIN user ON orderitem.user_id = user.id WHERE user.id = '$userID'";
+$sql = "SELECT * FROM Orderitem INNER JOIN User ON Orderitem.user_id = User.id WHERE User.id = '$userID'";
 $result = query($sql);
 confirm($result);
 ?>
@@ -47,9 +47,6 @@ confirm($result);
                         <th>Weight</th>
                         <th>Request for Shipment</th>
                         <th>Field box: EA</th>
-                        <th>Field box: Size</th>
-                        <th>Office box check</th>
-                        <th>Specification quantity</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -63,9 +60,6 @@ confirm($result);
                             <td><?php echo $row['weight']; ?></td>
                             <td><?php echo $row['requests']; ?></td>
                             <td><?php echo $row['count']; ?></td>
-                            <td>Null</td>
-                            <td>Null</td>
-                            <td>Null</td>
                         </tr>
                     <?php endwhile; ?>
                     </tbody>
